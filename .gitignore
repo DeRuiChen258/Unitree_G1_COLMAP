@@ -1,23 +1,27 @@
-### AL ###
-#Template for AL projects for Dynamics 365 Business Central
-#launch.json folder
-.vscode/
-#Cache folder
-.alcache/
-#Symbols folder
-.alpackages/
-#Snapshots folder
-.snapshots/
-#Testing Output folder
-.output/
-#Extension App-file
-*.app
-#Rapid Application Development File
-rad.json
-#Translation Base-file
-*.g.xlf
-#License-files
-*.bclicense
-*.flf
-#Test results file
-TestResults.xml
+# 构建/运行产物
+build/
+build_venv/
+deps/
+deps_src/
+install/
+dist/
+*.o
+*.so
+*.a
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# 数据集与重建产物（体积大，按需自行生成）
+py_out/
+robot_close/
+movingcam_video/
+orbit_multiview/images/
+*.db
+*.ply
+!assets/sample_robot_pointcloud.ply
+
+# 日志
+logs/
+*.log

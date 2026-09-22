@@ -1,0 +1,49 @@
+<!--
+  ⚠ 使用前把 PATH/TO/mujoco_menagerie 换成你自己的 MuJoCo Menagerie 路径
+      （git clone https://github.com/google-deepmind/mujoco_menagerie）
+  scene_sfm_test.xml —— COLMAP SfM/MVS 验证专用 MuJoCo 场景
+
+  与 menagerie 默认 scene.xml 的区别（也是必须新建场景的原因）：
+    1. 地面改用非周期随机纹理（sfm_floor.png），避免棋盘格的周期错配；
+    2. 加入多个不同高度/深度、带非周期纹理的几何体，提供真实视差与非平面结构；
+    3. 机器人来自 menagerie G1（绝对 include，避免复制第三方资源）。
+-->
+<mujoco model="colmap_sfm_validation">
+  <include file="../PATH/TO/mujoco_menagerie/unitree_g1/g1.xml"/>
+
+  <!-- g1.xml 里的 meshdir="assets" 是相对其自身目录的相对路径，被 include 后
+       需要显式用绝对路径覆盖（放在 include 之后以确保生效）。 -->
+  <compiler angle="radian"
+            meshdir="../PATH/TO/mujoco_menagerie/unitree_g1/assets"/>
+
+  <visual>
+    <headlight diffuse="0.65 0.65 0.65" ambient="0.4 0.4 0.4" specular="0.1 0.1 0.1"/>
+    <global offwidth="1280" offheight="960"/>
+  </visual>
+
+  <asset>
+    <texture name="sfm_floor_tex" type="2d" file="sfm_floor.png" width="1024" height="1024"/>
+    <material name="sfm_floor_mat" texture="sfm_floor_tex" texrepeat="1 1"
+              reflectance="0.12" specular="0.08" shininess="0.08"/>
+    <texture name="sfm_obj_tex" type="2d" file="sfm_object.png" width="1024" height="1024"/>
+    <material name="sfm_obj_mat" texture="sfm_obj_tex" texrepeat="1 1"
+              reflectance="0.1" specular="0.1" shininess="0.1"/>
+  </asset>
+
+  <worldbody>
+    <light directional="true" pos="0 0 5" dir="0 0 -1" diffuse="0.9 0.9 0.9"/>
+    <light directional="true" pos="3 -3 4" dir="-0.5 0.5 -1" diffuse="0.5 0.5 0.5"/>
+    <geom name="floor" type="plane" size="0 0 0.05" material="sfm_floor_mat"/>
+
+    <!-- 环绕基座布置的非共面物体：提供强视差与非平面 3D 结构 -->
+    <geom name="obj_box_a" type="box" size="0.22 0.18 0.38" pos="1.05 0.35 0.38" material="sfm_obj_mat"/>
+    <geom name="obj_box_b" type="box" size="0.30 0.12 0.20" pos="0.75 -0.85 0.20" material="sfm_obj_mat"/>
+    <geom name="obj_cyl_a" type="cylinder" size="0.13 0.42" pos="-0.95 0.55 0.42" material="sfm_obj_mat"/>
+    <geom name="obj_cyl_b" type="cylinder" size="0.20 0.14" pos="-0.70 -0.80 0.14" material="sfm_obj_mat"/>
+    <geom name="obj_sph_a" type="sphere" size="0.22" pos="0.10 1.05 0.22" material="sfm_obj_mat"/>
+    <geom name="obj_box_c" type="box" size="0.16 0.16 0.55" pos="-1.25 -0.15 0.55" material="sfm_obj_mat"/>
+    <geom name="obj_box_d" type="box" size="0.40 0.25 0.10" pos="1.45 -0.35 0.10" material="sfm_obj_mat"/>
+    <geom name="obj_cyl_c" type="cylinder" size="0.10 0.70" pos="0.45 1.35 0.70" material="sfm_obj_mat"/>
+    <geom name="obj_sph_b" type="sphere" size="0.16" pos="-1.55 0.95 0.16" material="sfm_obj_mat"/>
+  </worldbody>
+</mujoco>
